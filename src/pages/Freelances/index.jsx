@@ -1,8 +1,9 @@
 import Card from '../../components/Card'
 import colors from '../../utils/style/colors'
-import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Loader } from '../../utils/style/Atoms'
+
+import { useFetch } from '../../utils/hooks'
 
 const CardsContainer = styled.div`
   display: grid;
@@ -48,29 +49,38 @@ const PageSubtitle = styled.h2`
 // ]
 
 function Freelances() {
-  const [isDataLoading, setDataLoading] = useState(false)
-  const [error, setError] = useState(false)
-  const [freelancersList, setFreelancesData] = useState([])
+  // const [isDataLoading, setDataLoading] = useState(false)
+  // const [error, setError] = useState(false)
+  // const [freelancersList, setFreelancesData] = useState([])
 
-  useEffect(() => {
-    async function fetchFreelances() {
-      setDataLoading(true)
-      try {
-        const response = await fetch(`http://localhost:8000/freelances`)
-        const { freelancersList } = await response.json()
-        setFreelancesData(freelancersList)
-      } catch (error) {
-        console.error('===== error =====', error)
-        setError(true)
-      } finally {
-        setDataLoading(false)
-      }
-    }
-    fetchFreelances()
-  }, [])
+  // useEffect(() => {
+  //   async function fetchFreelances() {
+  //     setDataLoading(true)
+  //     try {
+  //       const response = await fetch(`http://localhost:8000/freelances`)
+  //       const { freelancersList } = await response.json()
+  //       setFreelancesData(freelancersList)
+  //     } catch (error) {
+  //       console.error('===== error =====', error)
+  //       setError(true)
+  //     } finally {
+  //       setDataLoading(false)
+  //     }
+  //   }
+  //   fetchFreelances()
+  // }, [])
+
+  // if (error) {
+  //   return <span>Oups il y a eu un problème</span>
+  // }
+
+  const { data, isLoading, error } = useFetch(
+    `http://localhost:8000/freelances`
+  )
+  const { freelancersList } = data
 
   if (error) {
-    return <span>Oups il y a eu un problème</span>
+    return <span>Il y a un problème</span>
   }
 
   return (
@@ -80,7 +90,7 @@ function Freelances() {
         Chez Shiny nous réunissons les meilleurs profils pour vous.
       </PageSubtitle>
 
-      {isDataLoading ? (
+      {isLoading ? (
         <LoaderWrapper>
           <Loader />
         </LoaderWrapper>

@@ -2,9 +2,8 @@ import { useContext } from 'react'
 import { SurveyContext } from '../../utils/context'
 import styled from 'styled-components'
 import colors from '../../utils/style/colors'
-import { useFetch } from '../../utils/hooks'
+import { useFetch, useTheme } from '../../utils/hooks'
 import { StyledLink, Loader } from '../../utils/style/Atoms'
-import { ThemeContext } from '../../utils/context'
 
 const ResultsContainer = styled.div`
   display: flex;
@@ -53,23 +52,34 @@ const LoaderWrapper = styled.div`
   justify-content: center;
 `
 
-function formatFetchParams(answers) {
+export function formatQueryParams(answers) {
   const answerNumbers = Object.keys(answers)
+  console.log('answers', answers)
+  console.log('answerNumbers', answerNumbers)
 
   return answerNumbers.reduce((previousParams, answerNumber, index) => {
+    console.log('previousParams', previousParams)
     const isFirstParam = index === 0
     const separator = isFirstParam ? '' : '&'
     return `${previousParams}${separator}a${answerNumber}=${answers[answerNumber]}`
   }, '')
 }
 
+export function formatJobList(title, listLength, index) {
+  if (index === listLength - 1) {
+    return title
+  } else {
+    return `${title},`
+  }
+}
+
 function Results() {
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useTheme()
   const { answers } = useContext(SurveyContext)
-  const fetchParams = formatFetchParams(answers)
+  const queryParams = formatQueryParams(answers)
 
   const { data, isLoading, error } = useFetch(
-    `http://localhost:8000/results?${fetchParams}`
+    `http://localhost:8000/results?${queryParams}`
   )
 
   if (error) {
@@ -92,8 +102,7 @@ function Results() {
               key={`result-title-${index}-${result.title}`}
               theme={theme}
             >
-              {result.title}
-              {index === resultsData.length - 1 ? '' : ','}
+              {formatJobList(result.title, resultsData.length, index)}
             </JobTitle>
           ))}
       </ResultsTitle>

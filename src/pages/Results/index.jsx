@@ -54,11 +54,8 @@ const LoaderWrapper = styled.div`
 
 export function formatQueryParams(answers) {
   const answerNumbers = Object.keys(answers)
-  console.log('answers', answers)
-  console.log('answerNumbers', answerNumbers)
 
   return answerNumbers.reduce((previousParams, answerNumber, index) => {
-    console.log('previousParams', previousParams)
     const isFirstParam = index === 0
     const separator = isFirstParam ? '' : '&'
     return `${previousParams}${separator}a${answerNumber}=${answers[answerNumber]}`
@@ -90,7 +87,7 @@ function Results() {
 
   return isLoading ? (
     <LoaderWrapper>
-      <Loader />
+      <Loader data-testid="loader" />
     </LoaderWrapper>
   ) : (
     <ResultsContainer theme={theme}>
@@ -116,8 +113,10 @@ function Results() {
               theme={theme}
               key={`result-detail-${index}-${result.title}`}
             >
-              <JobTitle theme={theme}>{result.title}</JobTitle>
-              <p>{result.description}</p>
+              <JobTitle theme={theme} data-testid="job-title">
+                {result.title}
+              </JobTitle>
+              <p data-testid="job-description">{result.description}</p>
             </JobDescription>
           ))}
       </DescriptionWrapper>
